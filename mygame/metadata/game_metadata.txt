@@ -1,7 +1,6 @@
-# Remove the pound sign and leading space for the properties below before publishing your game.
-# devid=myname
-# devtitle=My Name
-# gameid=mygame
-# gametitle=My Game
-# version=0.1
-# icon=metadata/icon.png
+devid=kfischer_okarin
+devtitle=Kevin Fischer
+gameid=advent-of-code-2022
+gametitle=Advent of Code 2022
+version=0.1.0
+icon=metadata/icon.png
