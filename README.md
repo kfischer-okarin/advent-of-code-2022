@@ -1,4 +1,7 @@
-# My Game
+# Advent of Code 2022
+
+My solutions to [Advent of Code 2022](https://adventofcode.com/2022) written in
+[DragonRuby GTK](https://dragonruby.itch.io/dragonruby-gtk).
 
 ## How to checkout the game
 1. Extract the DragonRuby version you want to use somewhere
