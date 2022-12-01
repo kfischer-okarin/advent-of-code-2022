@@ -1,5 +1,28 @@
+require 'app/map_screen.rb'
+
 def tick(args)
-  args.outputs.labels  << [640, 500, 'Hello World!', 5, 1]
-  args.outputs.labels  << [640, 460, 'Go to docs/docs.html and read it!', 5, 1]
-  args.outputs.labels  << [640, 420, 'Join the Discord! https://discord.dragonruby.org', 5, 1]
+  setup(args) if args.tick_count.zero?
+  $scene_manager.tick(args)
 end
+
+def setup(_args)
+  $scene_manager = SceneManager.new(MapScreen.new)
+end
+
+class SceneManager
+  attr_accessor :next_scene
+
+  def initialize(initial_scene)
+    @scenes = [initial_scene]
+  end
+
+  def active_scene
+    @scenes.last
+  end
+
+  def tick(args)
+    active_scene.tick(args)
+  end
+end
+
+$gtk.reset
