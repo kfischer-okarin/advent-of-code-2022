@@ -28,9 +28,13 @@ class MapScreen
   private
 
   def process_inputs(gtk_inputs, state)
+    mouse = gtk_inputs.mouse
     state.mouse_over_scene = MapScreen.scenes.values.find { |scene|
-      gtk_inputs.mouse.point.inside_rect?(scene)
+      mouse.point.inside_rect?(scene)
     }
+    return unless state.mouse_over_scene && mouse.click
+
+    $scene_manager.next_scene = state.mouse_over_scene[:scene_class].new
   end
 
   def render(gtk_outputs, state)
