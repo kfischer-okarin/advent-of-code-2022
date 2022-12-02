@@ -19,6 +19,13 @@ class MapScreen
     end
   end
 
+  def setup(args)
+    args.audio[:ambience] = {
+      input: 'audio/jungle.ogg',
+      looping: true
+    }
+  end
+
   def tick(args)
     state = args.state.map_screen ||= {}
     process_inputs(args.inputs, state)
