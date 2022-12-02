@@ -44,7 +44,7 @@ class MapScreen
   end
 
   def render_background(gtk_outputs)
-    gtk_outputs.primitives << { x: 0, y: 0, w: 1280, h: 720, path: 'jungle.png' }.sprite!
+    gtk_outputs.primitives << { x: 0, y: 0, w: 1280, h: 720, path: 'sprites/jungle.png' }.sprite!
   end
 
   def render_scene_buttons(gtk_outputs)
