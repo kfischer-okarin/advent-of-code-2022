@@ -1,3 +1,5 @@
+require 'lib/animations.rb'
+
 require 'app/map_screen.rb'
 
 require 'app/day01.rb'
