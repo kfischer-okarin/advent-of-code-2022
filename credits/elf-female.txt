@@ -1,0 +1,33 @@
+URL: https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/index.html#?body=Body_color_amber&hair=Bangslong_black&jacket=Santa_coat_green&hat=Elf_forest_white&shoes=Shoes_brown&beard=none&belt=none&gloves=Gloves_1&wrists=none&ears=Elven_ears_dark&nose=none&legs=Pants_green&sex=female&clothes=Blouse_red&head=Human_female_amber
+
+Authors: Benjamin K. Smith (BenCreating), bluecarrot16, TheraHedwig, Evert, MuffinElZangano, Durrani, Pierre Vigier (pvigier), ElizaWy, Matthew Krohn (makrohn), Johannes Sjölund (wulax), Stephen Challener (Redshrike), Manuel Riecke (MrBeast), Lanea Zimmerman (Sharm), David Conway Jr. (JaidynReiman), Joe White
+
+- body/bodies/female/universal/amber.png: by Benjamin K. Smith (BenCreating), bluecarrot16, TheraHedwig, Evert, MuffinElZangano, Durrani, Pierre Vigier (pvigier), ElizaWy, Matthew Krohn (makrohn), Johannes Sjölund (wulax), Stephen Challener (Redshrike). License(s): OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0.
+    - https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles
+    - https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+    - https://opengameart.org/content/lpc-ladies
+    - https://opengameart.org/content/lpc-7-womens-shirts
+    - https://opengameart.org/content/lpc-jump-expanded
+
+- head/heads/human_female/universal/amber.png: by bluecarrot16, Benjamin K. Smith (BenCreating), Stephen Challener (Redshrike). License(s): OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0.
+    - https://opengameart.org/content/
+    - https://opengameart.org/content/lpc-character-bases
+
+- hair/bangslong/female/black.png: by Manuel Riecke (MrBeast). License(s): CC-BY-SA 3.0, GPL 3.0.
+    - https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+
+- hat/elf/male/forest_white.png: by bluecarrot16. License(s): OGA-BY 3.0, GPL 3.0.
+    - https://opengameart.org/content/lpc-santa
+
+- torso/clothes/blouse/female/red.png: by bluecarrot16, ElizaWy, Lanea Zimmerman (Sharm). License(s): CC-BY-SA 3.0, GPL 3.0.
+    - https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles
+    - https://opengameart.org/content/lpc-7-womens-shirts
+
+- legs/pants/female/green.png: by bluecarrot16, David Conway Jr. (JaidynReiman), Joe White, Matthew Krohn (makrohn), Johannes Sjölund (wulax). License(s): GPL 3.0, CC-BY-SA 3.0.
+    - https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles
+    - https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+    - http://opengameart.org/content/lpc-clothing-updates
+
+- feet/shoes/female/brown.png: by Joe White, Johannes Sjölund (wulax). License(s): CC-BY-SA 3.0, GPL 3.0.
+    - https://opengameart.org/content/lpc-medieval-fantasy-character-sprites
+    - http://opengameart.org/content/lpc-clothing-updates
