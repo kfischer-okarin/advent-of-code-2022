@@ -1,6 +1,6 @@
 class Day01
   def initialize
-    @input = PuzzleInput.new(1).raw
+    @input = PuzzleInput.read('01')
   end
 
   def setup(args)
