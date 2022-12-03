@@ -1,3 +1,4 @@
+require 'lib/animated_sprite.rb'
 require 'lib/animations.rb'
 
 require 'app/map_screen.rb'
