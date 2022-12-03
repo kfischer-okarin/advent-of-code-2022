@@ -15,12 +15,21 @@ class Day01
     state.animations[:walk_down] = build_walk_animation(640)
     state.animations[:walk_right] = build_walk_animation(706)
 
-    state.elf_sprite = AnimatedSprite.build(
-      x: 100,
-      y: 100,
-      path: '/sprites/elf-female.png',
-      animations: state.animations
-    )
+    state.elves = 100.times.map {
+      build_elf(state, x: rand * (1280 - 64), y: rand * (720 - 64))
+    }
+  end
+
+  def build_elf(state, x:, y:)
+    {
+      x: x,
+      y: y,
+      sprite: AnimatedSprite.build(
+        path: "sprites/elf-#{rand < 0.5 ? :male : :female}.png",
+        animations: state.animations
+      ),
+      animation: :walk_down
+    }
   end
 
   def build_idle_animation(tile_y)
@@ -49,8 +58,11 @@ class Day01
     args.outputs.primitives << {
       x: 0, y: 0, w: 1280, h: 720, path: 'maps/day01/png/Level_0.png'
     }.sprite!
-    AnimatedSprite.update! args.state.day01.elf_sprite, animation: :walk_down
-    args.outputs.primitives << args.state.day01.elf_sprite
+    args.state.day01.elves.each do |elf|
+      elf[:sprite].update x: elf[:x] - 32, y: elf[:y]
+      AnimatedSprite.update! elf[:sprite], animation: elf[:animation]
+      args.outputs.primitives << elf[:sprite]
+    end
   end
 end
 
