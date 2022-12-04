@@ -24,11 +24,15 @@ class Day01
     {
       x: x,
       y: y,
+      state: {
+        type: %i[idle walk].sample,
+        direction: %i[up left down right].sample,
+        remaining_ticks: (rand * 300).ceil
+      },
       sprite: AnimatedSprite.build(
-        path: "sprites/elf-#{rand < 0.5 ? :male : :female}.png",
+        path: "sprites/elf-#{%i[male female].sample}.png",
         animations: state.animations
       ),
-      animation: :walk_down
     }
   end
 
@@ -51,17 +55,45 @@ class Day01
   end
 
   def tick(args)
-    render(args)
+    state = args.state.day01
+    render(args.outputs, state)
+    update(state)
   end
 
-  def render(args)
-    args.outputs.primitives << {
+  def render(gtk_outputs, state)
+    gtk_outputs.primitives << {
       x: 0, y: 0, w: 1280, h: 720, path: 'maps/day01/png/Level_0.png'
     }.sprite!
-    args.state.day01.elves.each do |elf|
+    state.elves.each do |elf|
       elf[:sprite].update x: elf[:x] - 32, y: elf[:y]
-      AnimatedSprite.update! elf[:sprite], animation: elf[:animation]
-      args.outputs.primitives << elf[:sprite]
+      AnimatedSprite.update! elf[:sprite], animation: :"#{elf[:state][:type]}_#{elf[:state][:direction]}"
+      gtk_outputs.primitives << elf[:sprite]
+      gtk_outputs.primitives << { x: elf[:x] - 16, y: elf[:y], w: 32, h: 64, r: 255, g: 0, b: 0 }.border!
+    end
+  end
+
+  def update(state)
+    state.elves.each do |elf|
+      elf_state = elf[:state]
+      if elf_state[:remaining_ticks].positive?
+        elf_state[:remaining_ticks] -= 1
+      else
+        elf_state[:remaining_ticks] = (rand * 300).ceil
+        elf_state[:type] = elf_state[:type] == :idle ? :walk : :idle
+        elf_state[:direction] = %i[up left down right].sample if elf_state[:type] == :walk
+      end
+      next unless elf_state[:type] == :walk
+
+      case elf_state[:direction]
+      when :up
+        elf[:y] = [elf[:y] + 1, 720 - 64].min
+      when :left
+        elf[:x] = [elf[:x] - 1, 16].max
+      when :down
+        elf[:y] = [elf[:y] - 1, 0].max
+      when :right
+        elf[:x] = [elf[:x] + 1, 1280 - 16].min
+      end
     end
   end
 end
