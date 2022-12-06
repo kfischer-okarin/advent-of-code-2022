@@ -1,7 +1,29 @@
 class Day01
   class << self
     def parse_input(puzzle_input)
-      puzzle_input.line_groups.map { |group| Inventory.new group.map(&:to_i) }
+      Inventories.new(
+        puzzle_input.line_groups.map { |group|
+          Inventory.new group.map(&:to_i)
+        }
+      )
+    end
+  end
+
+  class Inventories
+    def initialize(inventories)
+      @inventories = inventories
+    end
+
+    def [](index)
+      @inventories[index]
+    end
+
+    def length
+      @inventories.length
+    end
+
+    def max_total_calories
+      @inventories.map(&:total_calories).max
     end
   end
 
@@ -10,6 +32,10 @@ class Day01
 
     def initialize(items)
       @items = items
+    end
+
+    def total_calories
+      @total_calories ||= items.sum
     end
   end
 
