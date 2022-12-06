@@ -22,12 +22,16 @@ class Day01
       @inventories.length
     end
 
+    def sorted_by_total_calories
+      @sorted_by_total_calories ||= @inventories.sort_by(&:total_calories).reverse!
+    end
+
     def max_total_calories
-      @inventories.map(&:total_calories).max
+      sorted_by_total_calories[0].total_calories
     end
 
     def total_calories_of_top3
-      @inventories.map(&:total_calories).sort.last(3).sum
+      sorted_by_total_calories[0..2].sum(&:total_calories)
     end
   end
 

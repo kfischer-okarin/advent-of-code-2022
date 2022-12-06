@@ -21,6 +21,15 @@ def test_day01_inventories_total_calories_of_top3(_args, assert)
   assert.equal! inventories.total_calories_of_top3, 45_000
 end
 
+def test_day01_inventories_sorted_by_total_calories(_args, assert)
+  puzzle_input = day01_test_input
+  inventories = Day01.parse_input puzzle_input
+
+  sorted_inventories = inventories.sorted_by_total_calories
+
+  assert.equal! sorted_inventories[0].items, [7000, 8000, 9000]
+end
+
 def day01_test_input
   PuzzleInput.new(<<~INPUT)
     1000
