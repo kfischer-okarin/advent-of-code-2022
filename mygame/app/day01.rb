@@ -1,4 +1,18 @@
 class Day01
+  class << self
+    def parse_input(puzzle_input)
+      puzzle_input.line_groups.map { |group| Inventory.new group.map(&:to_i) }
+    end
+  end
+
+  class Inventory
+    attr_reader :items
+
+    def initialize(items)
+      @items = items
+    end
+  end
+
   def initialize
     @input = PuzzleInput.read('01')
   end
