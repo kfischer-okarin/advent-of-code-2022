@@ -25,6 +25,10 @@ class Day01
     def max_total_calories
       @inventories.map(&:total_calories).max
     end
+
+    def total_calories_of_top3
+      @inventories.map(&:total_calories).sort.last(3).sum
+    end
   end
 
   class Inventory
