@@ -6,6 +6,7 @@ class Day01
   def setup(args)
     args.state.day01.state.animations = {}
     state = args.state.day01
+    state.next_id = 0
     state.animations[:idle_up] = build_idle_animation(512)
     state.animations[:idle_left] = build_idle_animation(576)
     state.animations[:idle_down] = build_idle_animation(640)
@@ -22,6 +23,7 @@ class Day01
 
   def build_elf(state, x:, y:)
     {
+      id: state.next_id += 1,
       x: x,
       y: y,
       state: {
@@ -56,18 +58,32 @@ class Day01
 
   def tick(args)
     state = args.state.day01
+    process_inputs(args.inputs, state)
     render(args.outputs, state)
     update(state)
+  end
+
+  def process_inputs(inputs, state)
+    mouseover_elves = state.elves.select { |elf|
+      inputs.mouse.inside_rect?({ x: elf[:x] - 16, y: elf[:y], w: 32, h: 56 })
+    }
+    state.mouseover_elf = mouseover_elves.min_by { |elf| elf[:y] }
   end
 
   def render(gtk_outputs, state)
     gtk_outputs.primitives << {
       x: 0, y: 0, w: 1280, h: 720, path: 'maps/day01/png/Level_0.png'
     }.sprite!
+    mouseover_id = state.mouseover_elf&.id
     state.elves.each do |elf|
       elf[:sprite].update x: elf[:x] - 32, y: elf[:y]
       AnimatedSprite.update! elf[:sprite], animation: :"#{elf[:state][:type]}_#{elf[:state][:direction]}"
       gtk_outputs.primitives << elf[:sprite]
+      next unless elf[:id] == mouseover_id
+
+      gtk_outputs.primitives << {
+        x: elf[:x] - 16, y: elf[:y], w: 32, h: 56, r: 0, g: 255, b: 0
+      }.border!
     end
   end
 
