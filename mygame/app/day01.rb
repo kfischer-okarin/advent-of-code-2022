@@ -10,12 +10,18 @@ class Day01
   end
 
   class Inventories
+    include Enumerable
+
     def initialize(inventories)
       @inventories = inventories
     end
 
     def [](index)
       @inventories[index]
+    end
+
+    def each(&block)
+      @inventories.each(&block)
     end
 
     def length
@@ -49,6 +55,7 @@ class Day01
 
   def initialize
     @input = PuzzleInput.read('01')
+    @inventories = Day01.parse_input @input
   end
 
   def setup(args)
@@ -64,16 +71,20 @@ class Day01
     state.animations[:walk_down] = build_walk_animation(640)
     state.animations[:walk_right] = build_walk_animation(706)
 
-    state.elves = 100.times.map {
-      build_elf(state, x: rand * (1280 - 64), y: rand * (720 - 64))
+    state.elves = @inventories.sorted_by_total_calories.map_with_index { |inventory, index|
+      build_elf(
+        state,
+        x: rand * (1280 - 64),
+        y: rand * (720 - 64),
+        inventory: inventory,
+        rank: index + 1
+      )
     }
   end
 
-  def build_elf(state, x:, y:)
+  def build_elf(state, values)
     {
       id: state.next_id += 1,
-      x: x,
-      y: y,
       state: {
         type: %i[idle walk].sample,
         direction: %i[up left down right].sample,
@@ -82,8 +93,8 @@ class Day01
       sprite: AnimatedSprite.build(
         path: "sprites/elf-#{%i[male female].sample}.png",
         animations: state.animations
-      ),
-    }
+      )
+    }.merge!(values)
   end
 
   def build_idle_animation(tile_y)
@@ -132,9 +143,19 @@ class Day01
       elf[:sprite].update x: elf[:x] - 32, y: elf[:y]
       AnimatedSprite.update! elf[:sprite], animation: :"#{elf[:state][:type]}_#{elf[:state][:direction]}"
       gtk_outputs.primitives << elf[:sprite]
+      if elf[:rank] <= 3
+        gtk_outputs.primitives << {
+          x: elf[:x] - 12, y: elf[:y] + 64, r: 255, g: 255, b: 0,
+          w: 24, h: 24, path: :pixel
+        }.sprite!
+        gtk_outputs.primitives << {
+          x: elf[:x], y: elf[:y] + 74, text: elf[:rank].to_s,
+          alignment_enum: 1, vertical_alignment_enum: 1
+        }.label!
+      end
       if elf[:id] == selected_id
         gtk_outputs.primitives << {
-          x: elf[:x] - 16, y: elf[:y], w: 32, h: 56, r: 255, g: 0, b: 0
+          x: elf[:x] - 16, y: elf[:y], w: 32, h: 56, r: 255, g: 255, b: 0
         }.border!
       elsif elf[:id] == mouseover_id
         gtk_outputs.primitives << {
