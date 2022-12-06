@@ -64,10 +64,14 @@ class Day01
   end
 
   def process_inputs(inputs, state)
+    mouse = inputs.mouse
     mouseover_elves = state.elves.select { |elf|
-      inputs.mouse.inside_rect?({ x: elf[:x] - 16, y: elf[:y], w: 32, h: 56 })
+      mouse.inside_rect?({ x: elf[:x] - 16, y: elf[:y], w: 32, h: 56 })
     }
     state.mouseover_elf = mouseover_elves.min_by { |elf| elf[:y] }
+    return unless mouse.click
+
+    state.selected_elf = state.mouseover_elf
   end
 
   def render(gtk_outputs, state)
@@ -75,15 +79,20 @@ class Day01
       x: 0, y: 0, w: 1280, h: 720, path: 'maps/day01/png/Level_0.png'
     }.sprite!
     mouseover_id = state.mouseover_elf&.id
+    selected_id = state.selected_elf&.id
     state.elves.each do |elf|
       elf[:sprite].update x: elf[:x] - 32, y: elf[:y]
       AnimatedSprite.update! elf[:sprite], animation: :"#{elf[:state][:type]}_#{elf[:state][:direction]}"
       gtk_outputs.primitives << elf[:sprite]
-      next unless elf[:id] == mouseover_id
-
-      gtk_outputs.primitives << {
-        x: elf[:x] - 16, y: elf[:y], w: 32, h: 56, r: 0, g: 255, b: 0
-      }.border!
+      if elf[:id] == selected_id
+        gtk_outputs.primitives << {
+          x: elf[:x] - 16, y: elf[:y], w: 32, h: 56, r: 255, g: 0, b: 0
+        }.border!
+      elsif elf[:id] == mouseover_id
+        gtk_outputs.primitives << {
+          x: elf[:x] - 16, y: elf[:y], w: 32, h: 56, r: 0, g: 255, b: 0
+        }.border!
+      end
     end
   end
 
