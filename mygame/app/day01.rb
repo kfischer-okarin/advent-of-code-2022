@@ -137,6 +137,10 @@ class Day01
     gtk_outputs.primitives << {
       x: 0, y: 0, w: 1280, h: 720, path: 'maps/day01/png/Level_0.png'
     }.sprite!
+    render_elves gtk_outputs, state
+  end
+
+  def render_elves(gtk_outputs, state)
     mouseover_id = state.mouseover_elf&.id
     selected_id = state.selected_elf&.id
     state.elves.each do |elf|
