@@ -85,13 +85,17 @@ class Day01
 
       case elf_state[:direction]
       when :up
-        elf[:y] = [elf[:y] + 1, 720 - 64].min
+        elf[:y] += 1
+        elf_state[:direction] = :down if elf[:y] > 720 - 64
       when :left
-        elf[:x] = [elf[:x] - 1, 16].max
+        elf[:x] -= 1
+        elf_state[:direction] = :right if elf[:x] < 16
       when :down
-        elf[:y] = [elf[:y] - 1, 0].max
+        elf[:y] -= 1
+        elf_state[:direction] = :up if elf[:y].negative?
       when :right
-        elf[:x] = [elf[:x] + 1, 1280 - 16].min
+        elf[:x] += 1
+        elf_state[:direction] = :left if elf[:x] > 1280 - 16
       end
     end
   end
