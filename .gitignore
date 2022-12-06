@@ -1,5 +1,6 @@
 # Engine files
 .dragonruby
+builds
 docs
 include
 samples
