@@ -7,14 +7,14 @@ def test_day01_inventories(_args, assert)
   assert.equal! inventories[0].items, [1000, 2000, 3000]
 end
 
-def test_day01_max_total_calories(_args, assert)
+def test_day01_inventories_max_total_calories(_args, assert)
   puzzle_input = day01_test_input
   inventories = Day01.parse_input puzzle_input
 
   assert.equal! inventories.max_total_calories, 24_000
 end
 
-def test_day01_total_calories_of_top3(_args, assert)
+def test_day01_inventories_total_calories_of_top3(_args, assert)
   puzzle_input = day01_test_input
   inventories = Day01.parse_input puzzle_input
 
