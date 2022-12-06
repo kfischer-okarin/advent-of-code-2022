@@ -68,7 +68,6 @@ class Day01
       elf[:sprite].update x: elf[:x] - 32, y: elf[:y]
       AnimatedSprite.update! elf[:sprite], animation: :"#{elf[:state][:type]}_#{elf[:state][:direction]}"
       gtk_outputs.primitives << elf[:sprite]
-      gtk_outputs.primitives << { x: elf[:x] - 16, y: elf[:y], w: 32, h: 64, r: 255, g: 0, b: 0 }.border!
     end
   end
 
