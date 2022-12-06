@@ -33,6 +33,9 @@ class SceneManager
 
   def tick(args)
     active_scene&.tick(args)
+    unless $gtk.production
+      args.outputs.primitives << { x: 0, y: 720, text: $gtk.current_framerate.round.to_s, r: 255, g: 255, b: 255 }
+    end
     return unless next_scene
 
     @scenes << next_scene
