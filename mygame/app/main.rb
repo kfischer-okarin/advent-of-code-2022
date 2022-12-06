@@ -33,6 +33,7 @@ class SceneManager
 
   def tick(args)
     active_scene&.tick(args)
+    @scenes.pop if @scenes.size > 1 && args.inputs.keyboard.key_down.escape
     unless $gtk.production
       args.outputs.primitives << { x: 0, y: 720, text: $gtk.current_framerate.round.to_s, r: 255, g: 255, b: 255 }
     end
