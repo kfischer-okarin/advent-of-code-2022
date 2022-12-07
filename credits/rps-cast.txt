@@ -1,0 +1,4 @@
+The cast frames and the cast preview are based on work by Stephen Challener (slash animation and human bodies),
+Johannes Sjölund (recolours and skeleton), and Marcel van de Steeg (recolours and orc). The other preview uses
+art by Bart Kelsey, Charles Sanchez, Christopher Allan Webber, Daniel Armstrong, John Sullivan, Jonathan Palecek,
+ Joshua Gay, Lanea Zimmerman, Manuel Riecke, Rob Hawkes, and Stephen Challener

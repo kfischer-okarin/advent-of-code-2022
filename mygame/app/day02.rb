@@ -75,6 +75,61 @@ class Day02
 
   def tick(args)
     state = args.state.day02
+    render(args.outputs, state)
+  end
+
+  def render(outputs, state)
+    render_my_elf(outputs, state.my_elf)
+    render_enemy_elf(outputs, state.enemy_elf)
+  end
+
+  def render_my_elf(outputs, elf)
+    render_scaled_sprite(
+      outputs,
+      x: 320, y: 0, path: 'sprites/rps-cast.png',
+      source_x: (8 * 64) + 32, source_y: 20, source_w: 32, source_h: 36,
+      scale: 10
+    )
+    render_scaled_sprite(
+      outputs,
+      x: 0, y: 0, path: 'sprites/elf-female.png',
+      source_x: 256, source_y: 340, source_w: 49, source_h: 36,
+      scale: 10
+    )
+    render_scaled_sprite(
+      outputs,
+      x: 0, y: 0, path: 'sprites/elf-female.png',
+      source_x: 256, source_y: 340, source_w: 51, source_h: 10,
+      scale: 10
+    )
+  end
+
+  def render_enemy_elf(outputs, elf)
+    render_scaled_sprite(
+      outputs,
+      x: 640, y: 0, path: 'sprites/rps-cast.png',
+      source_x: (1 * 64), source_y: 20 + 3 * 64, source_w: 64, source_h: 36,
+      scale: 10
+    )
+    render_scaled_sprite(
+      outputs,
+      x: 780, y: 0, path: 'sprites/elf-male.png',
+      source_x: 270, source_y: 468, source_w: 49, source_h: 36,
+      scale: 10
+    )
+    render_scaled_sprite(
+      outputs,
+      x: 640, y: 0, path: 'sprites/elf-male.png',
+      source_x: 256, source_y: 468, source_w: 51, source_h: 10,
+      scale: 10
+    )
+  end
+
+  def render_scaled_sprite(gtk_outputs, x:, y:, path:, source_x:, source_y:, source_w:, source_h:, scale:)
+    gtk_outputs.primitives << {
+      x: x, y: y, w: source_w * scale, h: source_h * scale, path: path,
+      source_x: source_x, source_y: source_y, source_w: source_w, source_h: source_h
+    }.sprite!
   end
 end
 
