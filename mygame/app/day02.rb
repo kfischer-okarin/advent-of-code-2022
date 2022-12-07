@@ -62,6 +62,48 @@ class Day02
     end
   end
 
+  module Strategy
+    class << self
+      def play_rock(_enemy_choice)
+        :rock
+      end
+
+      def play_paper(_enemy_choice)
+        :paper
+      end
+
+      def play_scissors(_enemy_choice)
+        :scissors
+      end
+
+      def play_to_win(enemy_choice)
+        case enemy_choice
+        when :rock
+          :paper
+        when :paper
+          :scissors
+        when :scissors
+          :rock
+        end
+      end
+
+      def play_to_lose(enemy_choice)
+        case enemy_choice
+        when :rock
+          :scissors
+        when :paper
+          :rock
+        when :scissors
+          :paper
+        end
+      end
+
+      def play_same(enemy_choice)
+        enemy_choice
+      end
+    end
+  end
+
   def initialize
     @input = PuzzleInput.read('02')
     match = RockPaperScissorsMatch.new
