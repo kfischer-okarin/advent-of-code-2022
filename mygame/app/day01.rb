@@ -234,4 +234,4 @@ class Day01
   end
 end
 
-MapScreen.register Day01, day: 1, title: 'Calorie Counting', x: 70, y: 230
+MapScreen.register Day01, day: 1, title: 'Calorie Counting', x: 950, y: 150

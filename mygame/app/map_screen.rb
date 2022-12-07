@@ -51,7 +51,11 @@ class MapScreen
   end
 
   def render_background(gtk_outputs)
-    gtk_outputs.primitives << { x: 0, y: 0, w: 1280, h: 720, path: 'sprites/jungle-bg.png' }.sprite!
+    gtk_outputs.primitives << {
+      x: 0, y: 0, w: 1280, h: 720,
+      source_x: 0, source_y: 48, source_w: 1280, source_h: 720,
+      path: 'sprites/jungle-bg.png'
+    }.sprite!
   end
 
   def render_scene_buttons(gtk_outputs)
@@ -63,6 +67,7 @@ class MapScreen
         text: day.to_s,
         size_enum: 5, alignment_enum: 1, vertical_alignment_enum: 1
       }
+      gtk_outputs.primitives << scene.to_border(r: 0, g: 0, b: 0)
     end
   end
 
@@ -70,12 +75,12 @@ class MapScreen
     label = "--- Day #{scene[:day]}: #{scene[:title]} ---"
     label_size = $gtk.calcstringbox(label, 5, 'font.ttf')
     banner_width = label_size[0] + 40
-    gtk_outputs.primitives << {
-      x: 640 - banner_width.idiv(2), y: 660, w: banner_width, h: 40, r: 255, g: 255, b: 255
-    }.solid!
+    banner_rect = { x: 640 - banner_width.idiv(2), y: 660, w: banner_width, h: 40 }
+    gtk_outputs.primitives << banner_rect.to_solid(r: 255, g: 255, b: 255)
     gtk_outputs.primitives << {
       x: 640, y: 680, text: label,
       size_enum: 5, alignment_enum: 1, vertical_alignment_enum: 1
     }.label!
+    gtk_outputs.primitives << banner_rect.to_border(r: 0, g: 0, b: 0)
   end
 end
