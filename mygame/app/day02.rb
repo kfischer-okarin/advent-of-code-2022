@@ -62,6 +62,28 @@ class Day02
     end
   end
 
+  class StrategyGuide
+    class << self
+      def from_input(puzzle_input, strategies:)
+        rounds_to_play = puzzle_input.lines.map { |line|
+          enemy_choice_symbol, my_choice_symbol = line.split
+          enemy_choice = ENEMY_SYMBOL_MEANINGS[enemy_choice_symbol]
+          [
+            Strategy.send(strategies[my_choice_symbol], enemy_choice),
+            enemy_choice
+          ]
+        }
+        new(rounds_to_play)
+      end
+    end
+
+    attr_reader :rounds_to_play
+
+    def initialize(rounds_to_play)
+      @rounds_to_play = rounds_to_play
+    end
+  end
+
   module Strategy
     class << self
       def play_rock(_enemy_choice)

@@ -26,21 +26,6 @@ def test_day02_rock_paper_scissors_match(_args, assert)
   assert.equal! match.scores, [15, 15]
 end
 
-def test_day02_rock_paper_scissors_play_rounds(_args, assert)
-  match = Day02::RockPaperScissorsMatch.new
-  rounds = Day02.parse_input(
-    day02_test_input, my_symbol_meanings: {
-      'X' => :rock,
-      'Y' => :paper,
-      'Z' => :scissors
-    }
-  )
-
-  match.play_rounds rounds
-
-  assert.equal! match.scores, [15, 15]
-end
-
 def test_day02_rock_paper_scissors_strategies_play_rock(_args, assert)
   [
     { when: :rock, then: :rock },
@@ -111,6 +96,55 @@ def test_day02_rock_paper_scissors_strategies_play_same(_args, assert)
                   test_case[:then],
                   "Expected to have played #{test_case[:then]} against #{test_case[:when]}"
   end
+end
+
+def test_day02_strategy_guide_rounds_to_play(_args, assert)
+  guide = Day02::StrategyGuide.from_input(
+    day02_test_input,
+    strategies: {
+      'X' => :play_rock,
+      'Y' => :play_paper,
+      'Z' => :play_scissors
+    }
+  )
+
+  assert.equal! guide.rounds_to_play, [
+    %i[paper rock],
+    %i[rock paper],
+    %i[scissors scissors]
+  ]
+end
+
+def test_day02_rock_paper_scissors_play_rounds_part_1(_args, assert)
+  match = Day02::RockPaperScissorsMatch.new
+  guide = Day02::StrategyGuide.from_input(
+    day02_test_input,
+    strategies: {
+      'X' => :play_rock,
+      'Y' => :play_paper,
+      'Z' => :play_scissors
+    }
+  )
+
+  match.play_rounds guide.rounds_to_play
+
+  assert.equal! match.scores, [15, 15]
+end
+
+def test_day02_rock_paper_scissors_play_rounds_part_2(_args, assert)
+  match = Day02::RockPaperScissorsMatch.new
+  guide = Day02::StrategyGuide.from_input(
+    day02_test_input,
+    strategies: {
+      'X' => :play_to_lose,
+      'Y' => :play_same,
+      'Z' => :play_to_win
+    }
+  )
+
+  match.play_rounds guide.rounds_to_play
+
+  assert.equal! match.scores, [12, 15]
 end
 
 def day02_test_input
