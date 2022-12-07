@@ -6,6 +6,7 @@ require 'app/map_screen.rb'
 require 'app/puzzle_input.rb'
 
 require 'app/day01.rb'
+require 'app/day02.rb'
 
 def tick(args)
   setup(args) if args.tick_count.zero?

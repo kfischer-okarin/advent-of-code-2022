@@ -1,3 +1,5 @@
+require 'tests/app/day01.rb'
+require 'tests/app/day02.rb'
 require 'tests/lib/animated_sprite.rb'
 require 'tests/lib/animations.rb'
 require 'tests/lib/animations/asesprite_json.rb'
