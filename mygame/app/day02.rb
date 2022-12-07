@@ -79,15 +79,15 @@ class Day02
   end
 
   def render(outputs, state)
-    render_my_elf(outputs, state.my_elf)
-    render_enemy_elf(outputs, state.enemy_elf)
+    render_my_elf(outputs, :scissors)
+    render_enemy_elf(outputs, :paper)
   end
 
-  def render_my_elf(outputs, elf)
+  def render_my_elf(outputs, choice)
     render_scaled_sprite(
       outputs,
       x: 320, y: 0, path: 'sprites/rps-cast.png',
-      source_x: (8 * 64) + 32, source_y: 20, source_w: 32, source_h: 36,
+      source_x: (8 * 64) + 32, source_y: 20 + CHOICE_Y[choice], source_w: 32, source_h: 36,
       scale: 10
     )
     render_scaled_sprite(
@@ -104,11 +104,11 @@ class Day02
     )
   end
 
-  def render_enemy_elf(outputs, elf)
+  def render_enemy_elf(outputs, choice)
     render_scaled_sprite(
       outputs,
       x: 640, y: 0, path: 'sprites/rps-cast.png',
-      source_x: (1 * 64), source_y: 20 + 3 * 64, source_w: 64, source_h: 36,
+      source_x: (1 * 64), source_y: 20 + 3 * 64 + CHOICE_Y[choice], source_w: 64, source_h: 36,
       scale: 10
     )
     render_scaled_sprite(
@@ -124,6 +124,12 @@ class Day02
       scale: 10
     )
   end
+
+  CHOICE_Y = {
+    rock: 128,
+    paper: 64,
+    scissors: 0
+  }.freeze
 
   def render_scaled_sprite(gtk_outputs, x:, y:, path:, source_x:, source_y:, source_w:, source_h:, scale:)
     gtk_outputs.primitives << {
