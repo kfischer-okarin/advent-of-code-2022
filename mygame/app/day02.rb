@@ -295,11 +295,16 @@ class Day02
   end
 
   def handle_play(state)
-    state.last_played_round = nil
+    last_played_round = nil
     10.times do
-      state.last_played_round = @guide.play_next_round @match
+      last_played_round = @guide.play_next_round @match
     end
-    @playing = false unless state.last_played_round
+
+    if last_played_round
+      state.last_played_round = last_played_round
+    else
+      @playing = false
+    end
   end
 end
 
