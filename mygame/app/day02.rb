@@ -220,11 +220,11 @@ class Day02
 
   def render_ui(gtk_outputs, state)
     UI.draw_panel(gtk_outputs, x: 480, y: 400, w: 300, h: 300)
-    gtk_outputs.labels << { x: 520, y: 660, text: 'Strategies:', size_enum: 5 }
-    gtk_outputs.labels << { x: 520, y: 660, text: 'Strategies:', size_enum: 5 }
-    gtk_outputs.labels << { x: 520, y: 610, text: 'X:', size_enum: 3 }
-    gtk_outputs.labels << { x: 520, y: 560, text: 'Y:', size_enum: 3 }
-    gtk_outputs.labels << { x: 520, y: 510, text: 'Z:', size_enum: 3 }
+    gtk_outputs.primitives << { x: 520, y: 660, text: 'Strategies:', size_enum: 5 }
+    gtk_outputs.primitives << { x: 520, y: 660, text: 'Strategies:', size_enum: 5 }
+    gtk_outputs.primitives << { x: 520, y: 610, text: 'X:', size_enum: 3 }
+    gtk_outputs.primitives << { x: 520, y: 560, text: 'Y:', size_enum: 3 }
+    gtk_outputs.primitives << { x: 520, y: 510, text: 'Z:', size_enum: 3 }
     DropdownSelect.render_select(gtk_outputs, state.x_strategy)
     DropdownSelect.render_select(gtk_outputs, state.y_strategy)
     DropdownSelect.render_select(gtk_outputs, state.z_strategy)
