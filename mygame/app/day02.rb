@@ -234,7 +234,7 @@ class Day02
     DropdownSelect.render_select(gtk_outputs, state.y_strategy)
     DropdownSelect.render_select(gtk_outputs, state.z_strategy)
     render_play_button(gtk_outputs, state) unless @playing
-    render_scores(gtk_outputs, state) if @match
+    render_scores(gtk_outputs) if @match
     DropdownSelect.render_popup(gtk_outputs, state.x_strategy)
     DropdownSelect.render_popup(gtk_outputs, state.y_strategy)
     DropdownSelect.render_popup(gtk_outputs, state.z_strategy)
@@ -249,7 +249,7 @@ class Day02
     }.label!
   end
 
-  def render_scores(gtk_outputs, state)
+  def render_scores(gtk_outputs)
     my_score, enemy_score = @match.scores
     gtk_outputs.primitives << {
       x: 630, y: 350, text: "#{my_score}     #{enemy_score}",
