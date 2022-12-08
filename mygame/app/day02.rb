@@ -200,7 +200,7 @@ class Day02
     render_scaled_sprite(
       outputs,
       x: 640, y: 0, path: 'sprites/rps-cast.png',
-      source_x: (1 * 64), source_y: 20 + 3 * 64 + CHOICE_Y[choice], source_w: 64, source_h: 36,
+      source_x: 0, source_y: 20 + 3 * 64 + CHOICE_Y[choice], source_w: 64, source_h: 36,
       scale: 10
     )
     render_scaled_sprite(
