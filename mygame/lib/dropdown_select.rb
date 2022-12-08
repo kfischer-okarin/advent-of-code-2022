@@ -22,6 +22,10 @@ module DropdownSelect
       }
     end
 
+    def selected_value(dropdown_select)
+      dropdown_select[:selected][:value]
+    end
+
     def render_select(gtk_outputs, dropdown_select)
       gtk_outputs.primitives << [
         {

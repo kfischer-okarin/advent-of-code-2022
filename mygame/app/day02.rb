@@ -138,13 +138,6 @@ class Day02
 
   def initialize
     @input = PuzzleInput.read('02')
-    match = RockPaperScissorsMatch.new
-    match.play_rounds(Day02.parse_input(@input, my_symbol_meanings: {
-      'X' => :rock,
-      'Y' => :paper,
-      'Z' => :scissors
-    }))
-    puts match.scores
   end
 
   def setup(args)
@@ -166,17 +159,19 @@ class Day02
     state.z_strategy = DropdownSelect.build(
       x: 550, y: 480, w: 200, options: options, selected: :play_scissors
     )
+    state.button_rect = { x: 570, y: 380, w: 120, h: 75 }
   end
 
   def tick(args)
     state = args.state.day02
     render(args.outputs, state)
     process_inputs(args.inputs, state)
+    update(state)
   end
 
   def render(outputs, state)
-    render_my_elf(outputs, :scissors)
-    render_enemy_elf(outputs, :paper)
+    render_my_elf(outputs, state.last_played_round&.first || :rock)
+    render_enemy_elf(outputs, state.last_played_round&.second || :rock)
     render_ui(outputs, state)
   end
 
@@ -238,15 +233,28 @@ class Day02
     DropdownSelect.render_select(gtk_outputs, state.x_strategy)
     DropdownSelect.render_select(gtk_outputs, state.y_strategy)
     DropdownSelect.render_select(gtk_outputs, state.z_strategy)
-    UI.draw_button(gtk_outputs, x: 570, y: 380, w: 120, h: 75)
+    render_play_button(gtk_outputs, state) unless @playing
+    render_scores(gtk_outputs, state) if @match
+    DropdownSelect.render_popup(gtk_outputs, state.x_strategy)
+    DropdownSelect.render_popup(gtk_outputs, state.y_strategy)
+    DropdownSelect.render_popup(gtk_outputs, state.z_strategy)
+  end
+
+  def render_play_button(gtk_outputs, state)
+    UI.draw_button(gtk_outputs, **state.button_rect)
     gtk_outputs.primitives << {
       x: 630, y: 418, text: 'Play',
       size_enum: 3, alignment_enum: 1, vertical_alignment_enum: 1,
       r: 255, g: 255, b: 255
     }.label!
-    DropdownSelect.render_popup(gtk_outputs, state.x_strategy)
-    DropdownSelect.render_popup(gtk_outputs, state.y_strategy)
-    DropdownSelect.render_popup(gtk_outputs, state.z_strategy)
+  end
+
+  def render_scores(gtk_outputs, state)
+    my_score, enemy_score = @match.scores
+    gtk_outputs.primitives << {
+      x: 630, y: 350, text: "#{my_score}     #{enemy_score}",
+      size_enum: 3, alignment_enum: 1, vertical_alignment_enum: 1
+    }.label!
   end
 
   def render_scaled_sprite(gtk_outputs, x:, y:, path:, source_x:, source_y:, source_w:, source_h:, scale:)
@@ -257,10 +265,41 @@ class Day02
   end
 
   def process_inputs(gtk_inputs, state)
+    return if @playing
+
     return if DropdownSelect.process_inputs!(gtk_inputs, state.x_strategy)
     return if DropdownSelect.process_inputs!(gtk_inputs, state.y_strategy)
+    return if DropdownSelect.process_inputs!(gtk_inputs, state.z_strategy)
 
-    DropdownSelect.process_inputs!(gtk_inputs, state.z_strategy)
+    handle_play_button(gtk_inputs, state)
+  end
+
+  def handle_play_button(gtk_inputs, state)
+    mouse = gtk_inputs.mouse
+    return unless mouse.click && mouse.inside_rect?(state.button_rect)
+
+    @match = RockPaperScissorsMatch.new
+    @guide = StrategyGuide.from_input(
+      @input,
+      strategies: {
+        'X' => DropdownSelect.selected_value(state.x_strategy),
+        'Y' => DropdownSelect.selected_value(state.y_strategy),
+        'Z' => DropdownSelect.selected_value(state.z_strategy)
+      }
+    )
+    @playing = true
+  end
+
+  def update(state)
+    handle_play(state) if @playing
+  end
+
+  def handle_play(state)
+    state.last_played_round = nil
+    10.times do
+      state.last_played_round = @guide.play_next_round @match
+    end
+    @playing = false unless state.last_played_round
   end
 end
 
