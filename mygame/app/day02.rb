@@ -137,14 +137,37 @@ class Day02
     puts match.scores
   end
 
+  def setup(args)
+    state = args.state.day02 = {}
+    options = [
+      { label: 'Play Rock', value: :play_rock },
+      { label: 'Play Paper', value: :play_paper },
+      { label: 'Play Scissors', value: :play_scissors },
+      { label: 'Play to Win', value: :play_to_win },
+      { label: 'Play to Lose', value: :play_to_lose },
+      { label: 'Play Same', value: :play_same }
+    ]
+    state.x_strategy = DropdownSelect.build(
+      x: 90, y: 580, w: 200, options: options, selected: :play_rock
+    )
+    state.y_strategy = DropdownSelect.build(
+      x: 90, y: 530, w: 200, options: options, selected: :play_paper
+    )
+    state.z_strategy = DropdownSelect.build(
+      x: 90, y: 480, w: 200, options: options, selected: :play_scissors
+    )
+  end
+
   def tick(args)
     state = args.state.day02
     render(args.outputs, state)
+    process_inputs(args.inputs, state)
   end
 
   def render(outputs, state)
     render_my_elf(outputs, :scissors)
     render_enemy_elf(outputs, :paper)
+    render_ui(outputs, state)
   end
 
   def render_my_elf(outputs, choice)
@@ -195,11 +218,32 @@ class Day02
     scissors: 0
   }.freeze
 
+  def render_ui(gtk_outputs, state)
+    UI.draw_panel(gtk_outputs, x: 20, y: 400, w: 300, h: 300)
+    gtk_outputs.labels << { x: 60, y: 660, text: 'Strategies:', size_enum: 5 }
+    gtk_outputs.labels << { x: 60, y: 610, text: 'X:', size_enum: 3 }
+    gtk_outputs.labels << { x: 60, y: 560, text: 'Y:', size_enum: 3 }
+    gtk_outputs.labels << { x: 60, y: 510, text: 'Z:', size_enum: 3 }
+    DropdownSelect.render_select(gtk_outputs, state.x_strategy)
+    DropdownSelect.render_select(gtk_outputs, state.y_strategy)
+    DropdownSelect.render_select(gtk_outputs, state.z_strategy)
+    DropdownSelect.render_popup(gtk_outputs, state.x_strategy)
+    DropdownSelect.render_popup(gtk_outputs, state.y_strategy)
+    DropdownSelect.render_popup(gtk_outputs, state.z_strategy)
+  end
+
   def render_scaled_sprite(gtk_outputs, x:, y:, path:, source_x:, source_y:, source_w:, source_h:, scale:)
     gtk_outputs.primitives << {
       x: x, y: y, w: source_w * scale, h: source_h * scale, path: path,
       source_x: source_x, source_y: source_y, source_w: source_w, source_h: source_h
     }.sprite!
+  end
+
+  def process_inputs(gtk_inputs, state)
+    return if DropdownSelect.process_inputs!(gtk_inputs, state.x_strategy)
+    return if DropdownSelect.process_inputs!(gtk_inputs, state.y_strategy)
+
+    DropdownSelect.process_inputs!(gtk_inputs, state.z_strategy)
   end
 end
 
