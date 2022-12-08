@@ -115,7 +115,7 @@ def test_day02_strategy_guide_rounds_to_play(_args, assert)
   ]
 end
 
-def test_day02_rock_paper_scissors_play_rounds_part_1(_args, assert)
+def test_day02_strategy_guide_play_next_round_part1(_args, assert)
   match = Day02::RockPaperScissorsMatch.new
   guide = Day02::StrategyGuide.from_input(
     day02_test_input,
@@ -126,12 +126,28 @@ def test_day02_rock_paper_scissors_play_rounds_part_1(_args, assert)
     }
   )
 
-  match.play_rounds guide.rounds_to_play
+  played_round = guide.play_next_round(match)
 
+  assert.equal! played_round, %i[paper rock]
+  assert.equal! match.scores, [8, 1]
+
+  played_round = guide.play_next_round(match)
+
+  assert.equal! played_round, %i[rock paper]
+  assert.equal! match.scores, [9, 9]
+
+  played_round = guide.play_next_round(match)
+
+  assert.equal! played_round, %i[scissors scissors]
+  assert.equal! match.scores, [15, 15]
+
+  played_round = guide.play_next_round(match)
+
+  assert.equal! played_round, nil
   assert.equal! match.scores, [15, 15]
 end
 
-def test_day02_rock_paper_scissors_play_rounds_part_2(_args, assert)
+def test_day02_strategy_guide_play_next_round_part1(_args, assert)
   match = Day02::RockPaperScissorsMatch.new
   guide = Day02::StrategyGuide.from_input(
     day02_test_input,
@@ -142,8 +158,19 @@ def test_day02_rock_paper_scissors_play_rounds_part_2(_args, assert)
     }
   )
 
-  match.play_rounds guide.rounds_to_play
+  played_round = guide.play_next_round(match)
 
+  assert.equal! played_round, %i[rock rock]
+  assert.equal! match.scores, [4, 4]
+
+  played_round = guide.play_next_round(match)
+
+  assert.equal! played_round, %i[rock paper]
+  assert.equal! match.scores, [5, 12]
+
+  played_round = guide.play_next_round(match)
+
+  assert.equal! played_round, %i[rock scissors]
   assert.equal! match.scores, [12, 15]
 end
 

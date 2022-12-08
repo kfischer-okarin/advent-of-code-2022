@@ -81,6 +81,16 @@ class Day02
 
     def initialize(rounds_to_play)
       @rounds_to_play = rounds_to_play
+      @round_index = 0
+    end
+
+    def play_next_round(match)
+      round = @rounds_to_play[@round_index]
+      if round
+        match.play_round(*round)
+        @round_index += 1
+      end
+      round
     end
   end
 
