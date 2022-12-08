@@ -148,13 +148,13 @@ class Day02
       { label: 'Play Same', value: :play_same }
     ]
     state.x_strategy = DropdownSelect.build(
-      x: 90, y: 580, w: 200, options: options, selected: :play_rock
+      x: 550, y: 580, w: 200, options: options, selected: :play_rock
     )
     state.y_strategy = DropdownSelect.build(
-      x: 90, y: 530, w: 200, options: options, selected: :play_paper
+      x: 550, y: 530, w: 200, options: options, selected: :play_paper
     )
     state.z_strategy = DropdownSelect.build(
-      x: 90, y: 480, w: 200, options: options, selected: :play_scissors
+      x: 550, y: 480, w: 200, options: options, selected: :play_scissors
     )
   end
 
@@ -219,11 +219,12 @@ class Day02
   }.freeze
 
   def render_ui(gtk_outputs, state)
-    UI.draw_panel(gtk_outputs, x: 20, y: 400, w: 300, h: 300)
-    gtk_outputs.labels << { x: 60, y: 660, text: 'Strategies:', size_enum: 5 }
-    gtk_outputs.labels << { x: 60, y: 610, text: 'X:', size_enum: 3 }
-    gtk_outputs.labels << { x: 60, y: 560, text: 'Y:', size_enum: 3 }
-    gtk_outputs.labels << { x: 60, y: 510, text: 'Z:', size_enum: 3 }
+    UI.draw_panel(gtk_outputs, x: 480, y: 400, w: 300, h: 300)
+    gtk_outputs.labels << { x: 520, y: 660, text: 'Strategies:', size_enum: 5 }
+    gtk_outputs.labels << { x: 520, y: 660, text: 'Strategies:', size_enum: 5 }
+    gtk_outputs.labels << { x: 520, y: 610, text: 'X:', size_enum: 3 }
+    gtk_outputs.labels << { x: 520, y: 560, text: 'Y:', size_enum: 3 }
+    gtk_outputs.labels << { x: 520, y: 510, text: 'Z:', size_enum: 3 }
     DropdownSelect.render_select(gtk_outputs, state.x_strategy)
     DropdownSelect.render_select(gtk_outputs, state.y_strategy)
     DropdownSelect.render_select(gtk_outputs, state.z_strategy)
