@@ -4,6 +4,7 @@ require 'lib/nine_slice_panel.rb'
 
 require 'app/map_screen.rb'
 require 'app/puzzle_input.rb'
+require 'app/ui.rb'
 
 require 'app/day01.rb'
 require 'app/day02.rb'

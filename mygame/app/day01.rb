@@ -173,7 +173,7 @@ class Day01
   def render_ui(gtk_outputs, state)
     return unless state.selected_elf
 
-    draw_panel(gtk_outputs, x: 960, y: 200, w: 300, h: 400)
+    UI.draw_panel(gtk_outputs, x: 960, y: 200, w: 300, h: 400)
     gtk_outputs.primitives << {
       x: 990, y: 570, text: 'Inventory:'
     }.label!
@@ -191,17 +191,6 @@ class Day01
     gtk_outputs.primitives << {
       x: 990, y: 250, text: "Total Calories: #{state.selected_elf[:inventory].total_calories}"
     }.label!
-  end
-
-  def draw_panel(gtk_outputs, x:, y:, w:, h:)
-    panel = NineSlicePanel.new(
-      x: x, y: y, w: w, h: h,
-      sprite: {
-        path: 'sprites/panel.png', w: 128, h: 128,
-        left_w: 60, right_w: 60, top_h: 60, bottom_h: 60
-      }
-    )
-    panel.render(gtk_outputs)
   end
 
   def update(state)
