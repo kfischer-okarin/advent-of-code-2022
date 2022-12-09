@@ -1,4 +1,34 @@
 class Day03
+  class Rucksack
+    ITEM_TYPES = (('a'..'z').to_a + ('A'..'Z').to_a).freeze
+
+    class << self
+      def parse_rucksacks(input)
+        input.lines.map { |line|
+          Rucksack.new(
+            compartment1: line[0...line.length.idiv(2)].chars,
+            compartment2: line[line.length.idiv(2)..].chars
+          )
+        }
+      end
+
+      def item_type_priority(item_type)
+        ITEM_TYPES.index(item_type) + 1
+      end
+    end
+
+    attr_reader :compartment1, :compartment2
+
+    def initialize(compartment1:, compartment2:)
+      @compartment1 = compartment1
+      @compartment2 = compartment2
+    end
+
+    def wrongly_sorted_item_types
+      compartment1 & compartment2
+    end
+  end
+
   def initialize
     @input = PuzzleInput.read('03')
   end
@@ -12,9 +42,8 @@ class Day03
 
   def prepare_item_types(gtk_outputs)
     sprites = load_shoebox_xml('sprites/genericItems_spritesheet_white.xml')
-    letters = ('a'..'z').to_a + ('A'..'Z').to_a
     {}.tap { |items|
-      letters.each_with_index do |letter, index|
+      Rucksack::ITEM_TYPES.each_with_index do |letter, index|
         item = ITEMS[index]
         sprite = sprites[item[:sprite_index]]
         render_target = gtk_outputs[:"item_#{letter}"]
