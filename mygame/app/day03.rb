@@ -161,7 +161,7 @@ class Day03
   end
 
   class DragAndDrop
-    def initialize(items:, id: :object_id)
+    def initialize(items:)
       @items = items
       @id = id
       @dragged_item = nil
