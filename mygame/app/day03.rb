@@ -6,6 +6,8 @@ class Day03
   def setup(args)
     state = args.state.day03 = args.state.new_entity(:day_state)
     state.items_types = prepare_item_types(args.outputs)
+    state.items = prepare_items(state.items_types)
+    @drag_and_drop = DragAndDrop.new(items: state.items)
   end
 
   def prepare_item_types(gtk_outputs)
@@ -37,6 +39,26 @@ class Day03
     }
   end
 
+  def prepare_items(items_types)
+    [].tap { |items|
+      current_x = 0
+      current_y = 0
+      max_h = 0
+      items_types.each do |_, items_type|
+        sprite = items_type[:sprite]
+        if current_x + sprite[:w] > 1280
+          current_x = 0
+          current_y += max_h
+          max_h = 0
+        end
+
+        items << { x: current_x, y: current_y, w: sprite[:w], h: sprite[:h], item_type: items_type}
+        max_h = [max_h, sprite[:h]].max
+        current_x += sprite[:w]
+      end
+    }
+  end
+
   def tick(args)
     state = args.state.day03
     render(args.outputs, state)
@@ -45,22 +67,10 @@ class Day03
   end
 
   def render(gtk_outputs, state)
-    current_x = 0
-    current_y = 0
-    max_h = 0
-    state.items_types.each do |_, item|
-      break unless item
-
-      sprite = item[:sprite]
-      if current_x + sprite[:w] > 1280
-        current_x = 0
-        current_y += max_h
-        max_h = 0
-      end
-
-      render_item(gtk_outputs, item, x: current_x, y: current_y)
-      max_h = [max_h, sprite[:h]].max
-      current_x += sprite[:w]
+    # Render in reverse order so that earlier items are rendered on top
+    # since the drag and drop starts dragging the first item it finds
+    state.items.reverse_each do |item|
+      render_item(gtk_outputs, item[:item_type], x: item[:x], y: item[:y])
     end
   end
 
@@ -147,6 +157,36 @@ class Day03
   end
 
   def process_inputs(gtk_inputs, state)
+    @drag_and_drop.process_inputs(gtk_inputs)
+  end
+
+  class DragAndDrop
+    def initialize(items:, id: :object_id)
+      @items = items
+      @id = id
+      @dragged_item = nil
+      @drag_start = nil
+    end
+
+    def process_inputs(gtk_inputs)
+      mouse = gtk_inputs.mouse
+      if @dragged_item
+        if mouse.button_left
+          @dragged_item[:x] = mouse.x - @drag_start[0]
+          @dragged_item[:y] = mouse.y - @drag_start[1]
+        else
+          @dragged_item = nil
+        end
+      else
+        @items.each do |item|
+          next unless mouse.click && mouse.inside_rect?(item)
+
+          @dragged_item = item
+          @drag_start = [gtk_inputs.mouse.x - item[:x], gtk_inputs.mouse.y - item[:y]]
+          break
+        end
+      end
+    end
   end
 
   def update(state)
