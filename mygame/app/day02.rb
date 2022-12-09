@@ -5,18 +5,6 @@ class Day02
     'C' => :scissors
   }.freeze
 
-  class << self
-    def parse_input(puzzle_input, my_symbol_meanings:)
-      puzzle_input.lines.map { |line|
-        enemy_choice, my_choice = line.split
-        [
-          ENEMY_SYMBOL_MEANINGS[enemy_choice],
-          my_symbol_meanings[my_choice]
-        ]
-      }
-    end
-  end
-
   class RockPaperScissorsMatch
     SHAPE_POINTS = {
       rock: 1,
