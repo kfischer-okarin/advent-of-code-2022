@@ -49,13 +49,20 @@ class Day03
 
   def initialize
     @input = PuzzleInput.read('03')
-    @rucksacks = Rucksack.parse_rucksacks(@input)
+    @all_rucksacks = Rucksack.parse_rucksacks(@input)
+    @security_groups = Rucksack.split_into_security_groups(@all_rucksacks)
+    # Choose the group with the fewest items for game
+    @rucksacks = @security_groups.min_by { |rucksacks| rucksacks.map(&:item_count).sum }
   end
 
   def setup(args)
     state = args.state.day03 = args.state.new_entity(:day_state)
-    state.items_types = prepare_item_types(args.outputs)
-    state.items = prepare_items(state.items_types)
+    state.item_types = prepare_item_types(args.outputs)
+    state.rucksacks = @rucksacks.map { |rucksack|
+      prepare_rucksack(rucksack, state.item_types)
+    }
+    state.rucksack_index = 0
+    state.items = state.rucksacks[0]
     @drag_and_drop = DragAndDrop.new(items: state.items)
   end
 
@@ -87,23 +94,27 @@ class Day03
     }
   end
 
-  def prepare_items(items_types)
+  def prepare_rucksack(rucksack, item_types)
     [].tap { |items|
-      current_x = 0
-      current_y = 0
-      max_h = 0
-      items_types.each do |_, items_type|
-        sprite = items_type[:sprite]
-        if current_x + sprite[:w] > 1280
-          current_x = 0
-          current_y += max_h
-          max_h = 0
-        end
-
-        items << { x: current_x, y: current_y, w: sprite[:w], h: sprite[:h], item_type: items_type}
-        max_h = [max_h, sprite[:h]].max
-        current_x += sprite[:w]
+      rucksack.compartment1.each do |letter|
+        items << place_item_in(item_types[letter], { x: 0, y: 0, w: 640, h: 620 })
       end
+
+      rucksack.compartment2.each do |letter|
+        items << place_item_in(item_types[letter], { x: 640, y: 0, w: 640, h: 620 })
+      end
+    }
+  end
+
+  def place_item_in(item_type, rect)
+    sprite = item_type[:sprite]
+
+    {
+      x: rect.left + (rand * (rect.w - sprite[:w])).floor,
+      y: rect.bottom + (rand * (rect.h - sprite[:h]).floor),
+      w: sprite[:w],
+      h: sprite[:h],
+      item_type: item_type
     }
   end
 
@@ -120,6 +131,25 @@ class Day03
     state.items.reverse_each do |item|
       render_item(gtk_outputs, item[:item_type], x: item[:x], y: item[:y])
     end
+
+    UI.draw_panel(gtk_outputs, x: 540, y: 624, w: 200, h: 96)
+    gtk_outputs.primitives << {
+      x: 640, y: 685,
+      text: "Rucksack #{state.rucksack_index + 1}", size_enum: 3, alignment_enum: 1
+    }.label!
+    gtk_outputs.primitives << { x: 640, y: 0, x2: 640, y2: 628, r: 0, g: 0, b: 0 }.line!
+    UI.draw_wood_panel(gtk_outputs, x: 220, y: 620, w: 200, h: 80)
+    gtk_outputs.primitives << {
+      x: 320, y: 675,
+      text: 'Compartment 1', size_enum: 3, alignment_enum: 1,
+      r: 255, g: 255, b: 255
+    }.label!
+    UI.draw_wood_panel(gtk_outputs, x: 860, y: 620, w: 200, h: 80)
+    gtk_outputs.primitives << {
+      x: 960, y: 675,
+      text: 'Compartment 2', size_enum: 3, alignment_enum: 1,
+      r: 255, g: 255, b: 255
+    }.label!
   end
 
   def render_item(gtk_outputs, item, x:, y:)
