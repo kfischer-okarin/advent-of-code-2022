@@ -5,10 +5,10 @@ class Day03
 
   def setup(args)
     state = args.state.day03 = args.state.new_entity(:day_state)
-    state.items = build_items(args.outputs)
+    state.items_types = prepare_item_types(args.outputs)
   end
 
-  def build_items(gtk_outputs)
+  def prepare_item_types(gtk_outputs)
     sprites = load_shoebox_xml('sprites/genericItems_spritesheet_white.xml')
     letters = ('a'..'z').to_a + ('A'..'Z').to_a
     {}.tap { |items|
@@ -48,7 +48,7 @@ class Day03
     current_x = 0
     current_y = 0
     max_h = 0
-    state.items.each do |_, item|
+    state.items_types.each do |_, item|
       break unless item
 
       sprite = item[:sprite]
