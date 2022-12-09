@@ -16,6 +16,10 @@ class Day03
         ITEM_TYPES.index(item_type) + 1
       end
 
+      def split_into_security_groups(rucksacks)
+        rucksacks.each_slice(3).to_a
+      end
+
       def common_items(*rucksacks)
         rucksacks.reduce(ITEM_TYPES) { |common_items, rucksack|
           common_items & rucksack.all_items
@@ -36,6 +40,10 @@ class Day03
 
     def all_items
       compartment1 + compartment2
+    end
+
+    def item_count
+      all_items.count
     end
   end
 
