@@ -2,6 +2,7 @@ require 'lib/animated_sprite.rb'
 require 'lib/animations.rb'
 require 'lib/nine_slice_panel.rb'
 require 'lib/dropdown_select.rb'
+require 'lib/drag_and_drop.rb'
 
 require 'app/map_screen.rb'
 require 'app/puzzle_input.rb'
