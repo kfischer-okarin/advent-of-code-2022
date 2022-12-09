@@ -50,3 +50,33 @@ class SceneManager
 end
 
 $gtk.reset
+
+# New day boilerplate
+
+# class Day03
+#   def initialize
+#     @input = PuzzleInput.read('03')
+#   end
+
+#   def setup(args)
+#     state = args.state.day03 = args.state.new_entity(:day_state)
+#   end
+
+#   def tick(args)
+#     state = args.state.day03
+#     render(args.outputs, state)
+#     process_inputs(args.inputs, state)
+#     update(state)
+#   end
+
+#   def render(gtk_outputs, state)
+#   end
+
+#   def process_inputs(gtk_inputs, state)
+#   end
+
+#   def update(state)
+#   end
+# end
+
+# MapScreen.register Day03, day: 3, title: 'Rucksack Reorganization', x: 920, y: 250
