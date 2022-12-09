@@ -11,27 +11,29 @@ class Day03
   def build_items(gtk_outputs)
     sprites = load_shoebox_xml('sprites/genericItems_spritesheet_white.xml')
     letters = ('a'..'z').to_a + ('A'..'Z').to_a
-    letters.map_with_index { |letter, index|
-      item = ITEMS[index]
-      sprite = sprites[item[:sprite_index]]
-      render_target = gtk_outputs[:"item_#{letter}"]
-      render_target.width = sprite[:w]
-      render_target.height = sprite[:h]
-      render_target.primitives << sprite.to_sprite(x: 0, y: 0)
-      render_target.primitives << sprite.to_solid(x: 0, y: 0, r: 255, g: 255, b: 255, blendmode_enum: 2)
-      {
-        letter: letter,
-        priority: index + 1,
-        sprite: {
-          path: :"item_#{letter}",
-          w: sprite[:w],
-          h: sprite[:h],
-          r: 100 + (rand * 64),
-          g: 100 + (rand * 64),
-          b: 100 + (rand * 64)
-        },
-        label_offset: item[:label_offset]
-      }
+    {}.tap { |items|
+      letters.each_with_index do |letter, index|
+        item = ITEMS[index]
+        sprite = sprites[item[:sprite_index]]
+        render_target = gtk_outputs[:"item_#{letter}"]
+        render_target.width = sprite[:w]
+        render_target.height = sprite[:h]
+        render_target.primitives << sprite.to_sprite(x: 0, y: 0)
+        render_target.primitives << sprite.to_solid(x: 0, y: 0, r: 255, g: 255, b: 255, blendmode_enum: 2)
+        items[letter] = {
+          letter: letter,
+          priority: index + 1,
+          sprite: {
+            path: :"item_#{letter}",
+            w: sprite[:w],
+            h: sprite[:h],
+            r: 100 + (rand * 64),
+            g: 100 + (rand * 64),
+            b: 100 + (rand * 64)
+          },
+          label_offset: item[:label_offset]
+        }
+      end
     }
   end
 
@@ -46,7 +48,7 @@ class Day03
     current_x = 0
     current_y = 0
     max_h = 0
-    state.items.each do |item|
+    state.items.each do |_, item|
       break unless item
 
       sprite = item[:sprite]
