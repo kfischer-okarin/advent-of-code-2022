@@ -12,8 +12,6 @@ class Day03
     sprites = load_shoebox_xml('sprites/genericItems_spritesheet_white.xml')
     letters = ('a'..'z').to_a + ('A'..'Z').to_a
     letters.map_with_index { |letter, index|
-      next if index >= ITEMS.size
-
       item = ITEMS[index]
       sprite = sprites[item[:sprite_index]]
       render_target = gtk_outputs[:"item_#{letter}"]
@@ -58,14 +56,19 @@ class Day03
         max_h = 0
       end
 
-      gtk_outputs.primitives << sprite.to_sprite(x: current_x, y: current_y)
-      gtk_outputs.primitives << {
-        x: current_x + item[:label_offset][0], y: current_y + item[:label_offset][1],
-        text: item[:letter], alignment_enum: 1, vertical_alignment_enum: 1
-      }.label!
+      render_item(gtk_outputs, item, x: current_x, y: current_y)
       max_h = [max_h, sprite[:h]].max
       current_x += sprite[:w]
     end
+  end
+
+  def render_item(gtk_outputs, item, x:, y:)
+    sprite = item[:sprite]
+    gtk_outputs.primitives << sprite.to_sprite(x: x, y: y)
+    gtk_outputs.primitives << {
+      x: x + item[:label_offset][0], y: y + item[:label_offset][1],
+      text: item[:letter], alignment_enum: 1, vertical_alignment_enum: 1
+    }.label!
   end
 
   ITEMS = [
