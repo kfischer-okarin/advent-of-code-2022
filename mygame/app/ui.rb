@@ -5,7 +5,7 @@ module UI
         x: x, y: y, w: w, h: h,
         sprite: {
           path: 'sprites/panel.png', w: 128, h: 128,
-          left_w: 60, right_w: 60, top_h: 60, bottom_h: 60
+          left_w: 60, right_w: 56, top_h: 44, bottom_h: 52
         }
       )
       panel.render(gtk_outputs)
