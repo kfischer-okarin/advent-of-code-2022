@@ -171,20 +171,30 @@ class Day03
     def process_inputs(gtk_inputs)
       mouse = gtk_inputs.mouse
       if @dragged_item
-        if mouse.button_left
-          @dragged_item[:x] = mouse.x - @drag_start[0]
-          @dragged_item[:y] = mouse.y - @drag_start[1]
-        else
-          @dragged_item = nil
-        end
+        handle_drag(mouse)
       else
-        @items.each do |item|
-          next unless mouse.click && mouse.inside_rect?(item)
+        handle_start_drag(mouse)
+      end
+    end
 
-          @dragged_item = item
-          @drag_start = [gtk_inputs.mouse.x - item[:x], gtk_inputs.mouse.y - item[:y]]
-          break
-        end
+    private
+
+    def handle_drag(mouse)
+      if mouse.button_left
+        @dragged_item[:x] = mouse.x - @drag_start[0]
+        @dragged_item[:y] = mouse.y - @drag_start[1]
+      else
+        @dragged_item = nil
+      end
+    end
+
+    def handle_start_drag(mouse)
+      @items.each do |item|
+        next unless mouse.click && mouse.inside_rect?(item)
+
+        @dragged_item = item
+        @drag_start = [mouse.x - item[:x], mouse.y - item[:y]]
+        break
       end
     end
   end
