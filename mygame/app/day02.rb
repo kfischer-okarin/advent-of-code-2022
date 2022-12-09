@@ -147,7 +147,7 @@ class Day02
     state.z_strategy = DropdownSelect.build(
       x: 550, y: 480, w: 200, options: options, selected: :play_scissors
     )
-    state.button_rect = { x: 570, y: 380, w: 120, h: 75 }
+    state.button_rect = { x: 570, y: 390, w: 120, h: 55 }
   end
 
   def tick(args)
@@ -229,12 +229,7 @@ class Day02
   end
 
   def render_play_button(gtk_outputs, state)
-    UI.draw_button(gtk_outputs, **state.button_rect)
-    gtk_outputs.primitives << {
-      x: 630, y: 418, text: 'Play',
-      size_enum: 3, alignment_enum: 1, vertical_alignment_enum: 1,
-      r: 255, g: 255, b: 255
-    }.label!
+    UI.draw_button(gtk_outputs, text: 'Play', **state.button_rect)
   end
 
   def render_scores(gtk_outputs)
