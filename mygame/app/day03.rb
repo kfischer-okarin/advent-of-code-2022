@@ -15,6 +15,12 @@ class Day03
       def item_type_priority(item_type)
         ITEM_TYPES.index(item_type) + 1
       end
+
+      def common_items(*rucksacks)
+        rucksacks.reduce(ITEM_TYPES) { |common_items, rucksack|
+          common_items & rucksack.all_items
+        }
+      end
     end
 
     attr_reader :compartment1, :compartment2
@@ -27,10 +33,15 @@ class Day03
     def wrongly_sorted_item_types
       compartment1 & compartment2
     end
+
+    def all_items
+      compartment1 + compartment2
+    end
   end
 
   def initialize
     @input = PuzzleInput.read('03')
+    @rucksacks = Rucksack.parse_rucksacks(@input)
   end
 
   def setup(args)

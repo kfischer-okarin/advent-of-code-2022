@@ -22,6 +22,14 @@ def test_day03_rucksack_wrongly_sorted_item_types(_args, assert)
   assert.equal! rucksack.wrongly_sorted_item_types, %w[c]
 end
 
+def test_day03_rucksack_common_items(_args, assert)
+  rucksack1 = Day03::Rucksack.new(compartment1: %w[a b c d], compartment2: %w[f g h])
+  rucksack2 = Day03::Rucksack.new(compartment1: %w[g h i j], compartment2: %w[k l m])
+  rucksack3 = Day03::Rucksack.new(compartment1: %w[h z], compartment2: %w[y])
+
+  assert.equal! Day03::Rucksack.common_items(rucksack1, rucksack2, rucksack3), %w[h]
+end
+
 def test_day03_rucksack_item_type_priority(_args, assert)
   assert.equal! Day03::Rucksack.item_type_priority('a'), 1
   assert.equal! Day03::Rucksack.item_type_priority('z'), 26
@@ -39,6 +47,23 @@ def test_day03_part1_example(_args, assert)
     Day03::Rucksack.item_type_priority(item_type)
   }.sum
   assert.equal! sum_of_priorities, 16 + 38 + 42 + 22 + 20 + 19
+end
+
+def test_day03_part2_example(_args, assert)
+  rucksacks = Day03::Rucksack.parse_rucksacks(day03_test_input)
+
+  groups = rucksacks.each_slice(3).to_a
+  common_items = groups.map { |group|
+    Day03::Rucksack.common_items(*group)
+  }
+
+  assert.equal! common_items[0], %w[r]
+  assert.equal! common_items[1], %w[Z]
+
+  sum_of_priorities = common_items.flatten.map { |item_type|
+    Day03::Rucksack.item_type_priority(item_type)
+  }.sum
+  assert.equal! sum_of_priorities, 18 + 52
 end
 
 def day03_test_input
