@@ -66,6 +66,7 @@ class Day03
       prepare_rucksack(rucksack, state.item_types)
     }
     change_rucksack(state, 0)
+    state.mode = :normal
   end
 
   def prepare_item_types(gtk_outputs)
@@ -97,13 +98,17 @@ class Day03
   end
 
   def prepare_rucksack(rucksack, item_types)
-    [].tap { |items|
+    {
+      items: [],
+      duplicate_item: nil,
+      common_item: nil
+    }.tap { |result|
       rucksack.compartment1.each do |letter|
-        items << place_item_in(item_types[letter], { x: 0, y: 0, w: 640, h: 620 })
+        result[:items] << place_item_in(item_types[letter], { x: 0, y: 80, w: 640, h: 540 })
       end
 
       rucksack.compartment2.each do |letter|
-        items << place_item_in(item_types[letter], { x: 640, y: 0, w: 640, h: 620 })
+        result[:items] << place_item_in(item_types[letter], { x: 640, y: 0, w: 640, h: 620 })
       end
     }
   end
@@ -130,10 +135,21 @@ class Day03
   def render(gtk_outputs, state)
     gtk_outputs.primitives << { x: 640, y: 0, x2: 640, y2: 628, r: 0, g: 0, b: 0 }.line!
 
+    rucksack = current_rucksack(state)
     # Render in reverse order so that earlier items are rendered on top
     # since the drag and drop starts dragging the first item it finds
-    current_rucksack(state).reverse_each do |item|
+    rucksack[:items].reverse_each do |item|
       render_item(gtk_outputs, item[:item_type], x: item[:x], y: item[:y])
+    end
+
+    if rucksack[:duplicate_item]
+      rect = expand_rect(rucksack[:duplicate_item], 10)
+      render_border_with_text(gtk_outputs, rect, 'Duplicate', r: 255, g: 0, b: 0)
+    end
+
+    if rucksack[:common_item]
+      rect = expand_rect(rucksack[:common_item], 10)
+      render_border_with_text(gtk_outputs, rect, 'Common', r: 255, g: 0, b: 255)
     end
 
     UI.draw_panel(gtk_outputs, x: 540, y: 624, w: 200, h: 96)
@@ -161,8 +177,32 @@ class Day03
       gtk_outputs.primitives << @right_arrow_rect.to_sprite(path: 'sprites/arrow_right.png')
     end
 
-    UI.draw_button(gtk_outputs, text: 'Select duplicate item', size_enum: 1, **@duplicate_item_button_rect)
-    UI.draw_button(gtk_outputs, text: 'Select common item', size_enum: 1, **@common_item_button_rect)
+    if state.mode == :select_duplicate_item
+      gtk_outputs.primitives << expand_rect(@duplicate_item_button_rect, 5).solid!(r: 0, g: 255, b: 0, a: 64)
+    end
+    UI.draw_button(gtk_outputs, text: 'Mark duplicate item', size_enum: 1, **@duplicate_item_button_rect)
+    if state.mode == :select_common_item
+      gtk_outputs.primitives << expand_rect(@common_item_button_rect, 5).solid!(r: 0, g: 255, b: 0, a: 64)
+    end
+    UI.draw_button(gtk_outputs, text: 'Mark common item', size_enum: 1, **@common_item_button_rect)
+  end
+
+  def expand_rect(rect, amount)
+    {
+      x: rect.x - amount,
+      y: rect.y - amount,
+      w: rect.w + (amount * 2),
+      h: rect.h + (amount * 2)
+    }
+  end
+
+  def render_border_with_text(gtk_outputs, rect, text, **color)
+    gtk_outputs.primitives << rect.to_border(color)
+    gtk_outputs.primitives << {
+      x: rect.x + rect.w.half, y: rect.top,
+      text: text, alignment_enum: 1, vertical_alignment_enum: 0,
+      size_enum: -3
+    }.label!(color)
   end
 
   def render_item(gtk_outputs, item, x:, y:)
@@ -250,6 +290,7 @@ class Day03
   def process_inputs(gtk_inputs, state)
     @drag_and_drop.process_inputs(gtk_inputs)
     handle_change_rucksack(gtk_inputs, state)
+    handle_select_items(gtk_inputs, state)
   end
 
   def handle_change_rucksack(gtk_inputs, state)
@@ -258,9 +299,41 @@ class Day03
 
     if mouse.inside_rect? @left_arrow_rect
       state.rucksack_index = [state.rucksack_index - 1, 0].max
-    elsif  mouse.inside_rect? @right_arrow_rect
+    elsif mouse.inside_rect? @right_arrow_rect
       state.rucksack_index = [state.rucksack_index + 1, state.rucksacks.size - 1].min
     end
+  end
+
+  def handle_select_items(gtk_inputs, state)
+    mouse = gtk_inputs.mouse
+    case state.mode
+    when :normal
+      if mouse.click
+        if mouse.inside_rect? @duplicate_item_button_rect
+          state.mode = :select_duplicate_item
+        elsif mouse.inside_rect? @common_item_button_rect
+          state.mode = :select_common_item
+        end
+      end
+    when :select_duplicate_item
+      if mouse.click
+        clicked_item = find_mouseover_item(mouse, state)
+        current_rucksack(state)[:duplicate_item] = clicked_item if clicked_item
+        state.mode = :normal
+      end
+    when :select_common_item
+      if mouse.click
+        clicked_item = find_mouseover_item(mouse, state)
+        current_rucksack(state)[:common_item] = clicked_item if clicked_item
+        state.mode = :normal
+      end
+    end
+  end
+
+  def find_mouseover_item(mouse, state)
+    current_rucksack(state)[:items].find { |item|
+      mouse.inside_rect? item
+    }
   end
 
   def update(state)
@@ -272,7 +345,7 @@ class Day03
 
   def change_rucksack(state, rucksack_index)
     state.rucksack_index = rucksack_index
-    @drag_and_drop = DragAndDrop.new(items: current_rucksack(state))
+    @drag_and_drop = DragAndDrop.new(items: current_rucksack(state)[:items])
   end
 end
 
