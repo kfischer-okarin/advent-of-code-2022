@@ -11,6 +11,7 @@ require 'app/ui.rb'
 require 'app/day01.rb'
 require 'app/day02.rb'
 require 'app/day03.rb'
+require 'app/day04.rb'
 
 def tick(args)
   setup(args) if args.tick_count.zero?
