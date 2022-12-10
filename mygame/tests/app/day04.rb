@@ -1,9 +1,15 @@
 def test_day04_cleaning_assignment_completely_contains(_args, assert)
-  assignment1 = Day04::CleaningAssignment.new(1, 6)
-  assignment2 = Day04::CleaningAssignment.new(2, 4)
-
-  assert.true! assignment1.completely_contains?(assignment2)
+  assert.true! Day04::CleaningAssignment.new(1, 6).completely_contains?(Day04::CleaningAssignment.new(2, 4))
 end
+
+def test_day04_cleaning_assignment_overlaps(_args, assert)
+
+  assert.true! Day04::CleaningAssignment.new(1, 6).overlaps?(Day04::CleaningAssignment.new(5, 9))
+  assert.true! Day04::CleaningAssignment.new(5, 9).overlaps?(Day04::CleaningAssignment.new(5, 9))
+  assert.true! Day04::CleaningAssignment.new(1, 6).overlaps?(Day04::CleaningAssignment.new(2, 4))
+  assert.false! Day04::CleaningAssignment.new(1, 6).overlaps?(Day04::CleaningAssignment.new(7, 9))
+end
+
 
 def test_day04_part1(_args, assert)
   assignment_pairs = Day04::CleaningAssignment.parse_assignment_pairs(day04_test_input)

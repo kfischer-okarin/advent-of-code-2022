@@ -32,6 +32,11 @@ class Day04
     def completely_contains?(other)
       @start_section <= other.start_section && @end_section >= other.end_section
     end
+
+    def overlaps?(other)
+      ((@start_section <= other.start_section) && (@end_section >= other.start_section)) ||
+        ((@start_section <= other.end_section) && (@end_section >= other.end_section))
+    end
   end
 
   def initialize
