@@ -298,9 +298,9 @@ class Day03
     return unless mouse.click
 
     if mouse.inside_rect? @left_arrow_rect
-      state.rucksack_index = [state.rucksack_index - 1, 0].max
+      change_rucksack(state, state.rucksack_index - 1)
     elsif mouse.inside_rect? @right_arrow_rect
-      state.rucksack_index = [state.rucksack_index + 1, state.rucksacks.size - 1].min
+      change_rucksack(state, state.rucksack_index + 1)
     end
   end
 
@@ -344,7 +344,7 @@ class Day03
   end
 
   def change_rucksack(state, rucksack_index)
-    state.rucksack_index = rucksack_index
+    state.rucksack_index = rucksack_index.clamp(0, state.rucksacks.size - 1)
     @drag_and_drop = DragAndDrop.new(items: current_rucksack(state)[:items])
   end
 end
