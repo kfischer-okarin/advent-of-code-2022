@@ -2,5 +2,5 @@ devid=kfischer_okarin
 devtitle=Kevin Fischer
 gameid=advent-of-code-2022
 gametitle=Advent of Code 2022
-version=0.2.0
+version=0.3.0
 icon=metadata/icon.png
