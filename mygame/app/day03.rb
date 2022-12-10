@@ -185,6 +185,10 @@ class Day03
       gtk_outputs.primitives << expand_rect(@common_item_button_rect, 5).solid!(r: 0, g: 255, b: 0, a: 64)
     end
     UI.draw_button(gtk_outputs, text: 'Mark common item', size_enum: 1, **@common_item_button_rect)
+
+    if state.mode == :success
+      render_win_panel(gtk_outputs, state)
+    end
   end
 
   def expand_rect(rect, amount)
@@ -211,6 +215,23 @@ class Day03
     gtk_outputs.primitives << {
       x: x + item[:label_offset][0], y: y + item[:label_offset][1],
       text: item[:letter], alignment_enum: 1, vertical_alignment_enum: 1
+    }.label!
+  end
+
+  def render_win_panel(gtk_outputs, state)
+    UI.draw_panel(gtk_outputs, x: 340, y: 260, w: 600, h: 200)
+    gtk_outputs.primitives << {
+      x: 640, y: 420,
+      text: 'You win!', size_enum: 5, alignment_enum: 1,
+    }.label!
+
+    gtk_outputs.primitives << {
+      x: 380, y: 380,
+      text: "Priority sum of all wrongly sorted items: #{state.solution[:sum_of_wrongly_sorted_items]}"
+    }.label!
+    gtk_outputs.primitives << {
+      x: 380, y: 360,
+      text: "Priority sum of all common items: #{state.solution[:sum_of_common_items]}"
     }.label!
   end
 
@@ -288,6 +309,8 @@ class Day03
   end
 
   def process_inputs(gtk_inputs, state)
+    return if state.mode == :success
+
     @drag_and_drop.process_inputs(gtk_inputs)
     handle_change_rucksack(gtk_inputs, state)
     handle_select_items(gtk_inputs, state)
@@ -319,13 +342,13 @@ class Day03
       if mouse.click
         clicked_item = find_mouseover_item(mouse, state)
         current_rucksack(state)[:wrongly_sorted_item] = clicked_item if clicked_item
-        state.mode = :normal
+        check_selections(state)
       end
     when :select_common_item
       if mouse.click
         clicked_item = find_mouseover_item(mouse, state)
         current_rucksack(state)[:common_item] = clicked_item if clicked_item
-        state.mode = :normal
+        check_selections(state)
       end
     end
   end
@@ -333,6 +356,30 @@ class Day03
   def find_mouseover_item(mouse, state)
     current_rucksack(state)[:items].find { |item|
       mouse.inside_rect? item
+    }
+  end
+
+  def check_selections(state)
+    actual_wrongly_sorted_items = @rucksacks.map { |rucksack| rucksack.wrongly_sorted_item_types }.flatten
+    selected_wrongly_sorted_items = state.rucksacks.map { |rucksack| rucksack[:wrongly_sorted_item]&.item_type&.letter }
+    actual_common_item = Rucksack.common_items(*@rucksacks)
+    selected_common_item = state.rucksacks.map { |rucksack| rucksack[:common_item]&.item_type&.letter }.uniq
+    if actual_wrongly_sorted_items == selected_wrongly_sorted_items && actual_common_item == selected_common_item
+      state.solution = calculate_solution
+      state.mode = :success
+    else
+      state.mode = :normal
+    end
+  end
+
+  def calculate_solution
+    {
+      sum_of_wrongly_sorted_items: @all_rucksacks.map(&:wrongly_sorted_item_types).flatten.map { |item_type|
+        Rucksack.item_type_priority(item_type)
+      }.sum,
+      sum_of_common_items: @security_groups.map { |rucksacks|
+        Rucksack.common_items(*rucksacks).map { |item_type| Rucksack.item_type_priority(item_type) }
+      }.flatten.sum
     }
   end
 
