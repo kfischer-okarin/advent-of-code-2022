@@ -21,7 +21,7 @@ class MapScreen
 
   def setup(args)
     args.audio[:ambience] = {
-      input: 'audio/jungle.ogg',
+      input: 'audio/Jungle.ogg',
       looping: true
     }
   end
