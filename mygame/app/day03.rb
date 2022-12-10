@@ -53,6 +53,8 @@ class Day03
     @security_groups = Rucksack.split_into_security_groups(@all_rucksacks)
     # Choose the group with the fewest items for game
     @rucksacks = @security_groups.min_by { |rucksacks| rucksacks.map(&:item_count).sum }
+    @left_arrow_rect = { x: 485, y: 650, w: 44, h: 42 }
+    @right_arrow_rect = { x: 750, y: 650, w: 44, h: 42 }
   end
 
   def setup(args)
@@ -61,9 +63,7 @@ class Day03
     state.rucksacks = @rucksacks.map { |rucksack|
       prepare_rucksack(rucksack, state.item_types)
     }
-    state.rucksack_index = 0
-    state.items = state.rucksacks[0]
-    @drag_and_drop = DragAndDrop.new(items: state.items)
+    change_rucksack(state, 0)
   end
 
   def prepare_item_types(gtk_outputs)
@@ -128,7 +128,7 @@ class Day03
   def render(gtk_outputs, state)
     # Render in reverse order so that earlier items are rendered on top
     # since the drag and drop starts dragging the first item it finds
-    state.items.reverse_each do |item|
+    current_rucksack(state).reverse_each do |item|
       render_item(gtk_outputs, item[:item_type], x: item[:x], y: item[:y])
     end
 
@@ -150,6 +150,13 @@ class Day03
       text: 'Compartment 2', size_enum: 3, alignment_enum: 1,
       r: 255, g: 255, b: 255
     }.label!
+
+    if state.rucksack_index.positive?
+      gtk_outputs.primitives << @left_arrow_rect.to_sprite(path: 'sprites/arrow_left.png')
+    end
+    if state.rucksack_index < @rucksacks.size - 1
+      gtk_outputs.primitives << @right_arrow_rect.to_sprite(path: 'sprites/arrow_right.png')
+    end
   end
 
   def render_item(gtk_outputs, item, x:, y:)
@@ -236,9 +243,30 @@ class Day03
 
   def process_inputs(gtk_inputs, state)
     @drag_and_drop.process_inputs(gtk_inputs)
+    handle_change_rucksack(gtk_inputs, state)
+  end
+
+  def handle_change_rucksack(gtk_inputs, state)
+    mouse = gtk_inputs.mouse
+    return unless mouse.click
+
+    if mouse.inside_rect? @left_arrow_rect
+      state.rucksack_index = [state.rucksack_index - 1, 0].max
+    elsif  mouse.inside_rect? @right_arrow_rect
+      state.rucksack_index = [state.rucksack_index + 1, state.rucksacks.size - 1].min
+    end
   end
 
   def update(state)
+  end
+
+  def current_rucksack(state)
+    state.rucksacks[state.rucksack_index]
+  end
+
+  def change_rucksack(state, rucksack_index)
+    state.rucksack_index = rucksack_index
+    @drag_and_drop = DragAndDrop.new(items: current_rucksack(state))
   end
 end
 
