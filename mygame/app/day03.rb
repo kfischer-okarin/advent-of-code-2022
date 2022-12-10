@@ -55,6 +55,8 @@ class Day03
     @rucksacks = @security_groups.min_by { |rucksacks| rucksacks.map(&:item_count).sum }
     @left_arrow_rect = { x: 485, y: 650, w: 44, h: 42 }
     @right_arrow_rect = { x: 750, y: 650, w: 44, h: 42 }
+    @duplicate_item_button_rect = { x: 20, y: 20, w: 250, h: 40 }
+    @common_item_button_rect = { x: 290, y: 20, w: 220, h: 40 }
   end
 
   def setup(args)
@@ -126,6 +128,8 @@ class Day03
   end
 
   def render(gtk_outputs, state)
+    gtk_outputs.primitives << { x: 640, y: 0, x2: 640, y2: 628, r: 0, g: 0, b: 0 }.line!
+
     # Render in reverse order so that earlier items are rendered on top
     # since the drag and drop starts dragging the first item it finds
     current_rucksack(state).reverse_each do |item|
@@ -137,7 +141,6 @@ class Day03
       x: 640, y: 685,
       text: "Rucksack #{state.rucksack_index + 1}", size_enum: 3, alignment_enum: 1
     }.label!
-    gtk_outputs.primitives << { x: 640, y: 0, x2: 640, y2: 628, r: 0, g: 0, b: 0 }.line!
     UI.draw_wood_panel(gtk_outputs, x: 220, y: 620, w: 200, h: 80)
     gtk_outputs.primitives << {
       x: 320, y: 675,
@@ -157,6 +160,9 @@ class Day03
     if state.rucksack_index < @rucksacks.size - 1
       gtk_outputs.primitives << @right_arrow_rect.to_sprite(path: 'sprites/arrow_right.png')
     end
+
+    UI.draw_button(gtk_outputs, text: 'Select duplicate item', size_enum: 1, **@duplicate_item_button_rect)
+    UI.draw_button(gtk_outputs, text: 'Select common item', size_enum: 1, **@common_item_button_rect)
   end
 
   def render_item(gtk_outputs, item, x:, y:)
