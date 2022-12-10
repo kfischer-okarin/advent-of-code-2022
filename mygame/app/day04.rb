@@ -41,7 +41,8 @@ class Day04
 
     def overlaps?(other)
       ((@start_section <= other.start_section) && (@end_section >= other.start_section)) ||
-        ((@start_section <= other.end_section) && (@end_section >= other.end_section))
+        ((@start_section <= other.end_section) && (@end_section >= other.end_section)) ||
+          ((@start_section >= other.start_section) && (@end_section <= other.end_section))
     end
   end
 

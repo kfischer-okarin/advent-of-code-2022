@@ -7,6 +7,7 @@ def test_day04_cleaning_assignment_overlaps(_args, assert)
   assert.true! Day04::CleaningAssignment.new(1, 6).overlaps?(Day04::CleaningAssignment.new(5, 9))
   assert.true! Day04::CleaningAssignment.new(5, 9).overlaps?(Day04::CleaningAssignment.new(5, 9))
   assert.true! Day04::CleaningAssignment.new(1, 6).overlaps?(Day04::CleaningAssignment.new(2, 4))
+  assert.true! Day04::CleaningAssignment.new(2, 4).overlaps?(Day04::CleaningAssignment.new(1, 6))
   assert.false! Day04::CleaningAssignment.new(1, 6).overlaps?(Day04::CleaningAssignment.new(7, 9))
 end
 
