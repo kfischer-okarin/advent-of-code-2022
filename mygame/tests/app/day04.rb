@@ -10,13 +10,20 @@ def test_day04_cleaning_assignment_overlaps(_args, assert)
   assert.false! Day04::CleaningAssignment.new(1, 6).overlaps?(Day04::CleaningAssignment.new(7, 9))
 end
 
-
 def test_day04_part1(_args, assert)
   assignment_pairs = Day04::CleaningAssignment.parse_assignment_pairs(day04_test_input)
 
   redundant_pairs = Day04::CleaningAssignment.redundant_pairs(assignment_pairs)
 
   assert.equal! redundant_pairs.length, 2
+end
+
+def test_day04_part2(_args, assert)
+  assignment_pairs = Day04::CleaningAssignment.parse_assignment_pairs(day04_test_input)
+
+  overlapping_pairs = Day04::CleaningAssignment.overlapping_pairs(assignment_pairs)
+
+  assert.equal! overlapping_pairs.length, 4
 end
 
 def day04_test_input

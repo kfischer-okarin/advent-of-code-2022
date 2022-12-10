@@ -20,6 +20,12 @@ class Day04
             assignment_pair[1].completely_contains?(assignment_pair[0])
         }
       end
+
+      def overlapping_pairs(assignment_pairs)
+        assignment_pairs.select { |assignment_pair|
+          assignment_pair[0].overlaps?(assignment_pair[1])
+        }
+      end
     end
 
     attr_reader :start_section, :end_section
