@@ -55,8 +55,8 @@ class Day03
     @rucksacks = @security_groups.min_by { |rucksacks| rucksacks.map(&:item_count).sum }
     @left_arrow_rect = { x: 485, y: 650, w: 44, h: 42 }
     @right_arrow_rect = { x: 750, y: 650, w: 44, h: 42 }
-    @duplicate_item_button_rect = { x: 20, y: 20, w: 250, h: 40 }
-    @common_item_button_rect = { x: 290, y: 20, w: 220, h: 40 }
+    @wrongly_sorted_item_button_rect = { x: 20, y: 20, w: 280, h: 40 }
+    @common_item_button_rect = { x: 320, y: 20, w: 220, h: 40 }
   end
 
   def setup(args)
@@ -100,7 +100,7 @@ class Day03
   def prepare_rucksack(rucksack, item_types)
     {
       items: [],
-      duplicate_item: nil,
+      wrongly_sorted_item: nil,
       common_item: nil
     }.tap { |result|
       rucksack.compartment1.each do |letter|
@@ -142,9 +142,9 @@ class Day03
       render_item(gtk_outputs, item[:item_type], x: item[:x], y: item[:y])
     end
 
-    if rucksack[:duplicate_item]
-      rect = expand_rect(rucksack[:duplicate_item], 10)
-      render_border_with_text(gtk_outputs, rect, 'Duplicate', r: 255, g: 0, b: 0)
+    if rucksack[:wrongly_sorted_item]
+      rect = expand_rect(rucksack[:wrongly_sorted_item], 10)
+      render_border_with_text(gtk_outputs, rect, 'Wrongly Sorted', r: 255, g: 0, b: 0)
     end
 
     if rucksack[:common_item]
@@ -177,10 +177,10 @@ class Day03
       gtk_outputs.primitives << @right_arrow_rect.to_sprite(path: 'sprites/arrow_right.png')
     end
 
-    if state.mode == :select_duplicate_item
-      gtk_outputs.primitives << expand_rect(@duplicate_item_button_rect, 5).solid!(r: 0, g: 255, b: 0, a: 64)
+    if state.mode == :select_wrongly_sorted_item
+      gtk_outputs.primitives << expand_rect(@wrongly_sorted_item_button_rect, 5).solid!(r: 0, g: 255, b: 0, a: 64)
     end
-    UI.draw_button(gtk_outputs, text: 'Mark duplicate item', size_enum: 1, **@duplicate_item_button_rect)
+    UI.draw_button(gtk_outputs, text: 'Mark wrongly sorted item', size_enum: 1, **@wrongly_sorted_item_button_rect)
     if state.mode == :select_common_item
       gtk_outputs.primitives << expand_rect(@common_item_button_rect, 5).solid!(r: 0, g: 255, b: 0, a: 64)
     end
@@ -309,16 +309,16 @@ class Day03
     case state.mode
     when :normal
       if mouse.click
-        if mouse.inside_rect? @duplicate_item_button_rect
-          state.mode = :select_duplicate_item
+        if mouse.inside_rect? @wrongly_sorted_item_button_rect
+          state.mode = :select_wrongly_sorted_item
         elsif mouse.inside_rect? @common_item_button_rect
           state.mode = :select_common_item
         end
       end
-    when :select_duplicate_item
+    when :select_wrongly_sorted_item
       if mouse.click
         clicked_item = find_mouseover_item(mouse, state)
-        current_rucksack(state)[:duplicate_item] = clicked_item if clicked_item
+        current_rucksack(state)[:wrongly_sorted_item] = clicked_item if clicked_item
         state.mode = :normal
       end
     when :select_common_item
