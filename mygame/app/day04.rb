@@ -1,5 +1,27 @@
 class Day04
   class CleaningAssignment
+    class << self
+      def parse_assignment_pairs(input)
+        input.lines.map { |line|
+          line.split(',').map { |assignment_string|
+            parse(assignment_string)
+          }
+        }
+      end
+
+      def parse(string)
+        start_section, end_section = string.split('-').map(&:to_i)
+        new(start_section, end_section)
+      end
+
+      def redundant_pairs(assignment_pairs)
+        assignment_pairs.select { |assignment_pair|
+          assignment_pair[0].completely_contains?(assignment_pair[1]) ||
+            assignment_pair[1].completely_contains?(assignment_pair[0])
+        }
+      end
+    end
+
     attr_reader :start_section, :end_section
 
     def initialize(start_section, end_section)
